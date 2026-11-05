@@ -1,3 +1,9 @@
+# Unreleased
+
+## Bug Fixes
+
+- **Indicator chromatic aberration is now visible (`AnimatedGlassIndicator`, `GlassSegmentedControl`, `GlassTabBar` indicators on Standard quality and Skia/web):** `interactive_indicator.frag` shifted the red/blue channels by `normal * edgeInfluence * chromaticAberration * 0.12` logical px, so even `chromaticAberration: 1.0` split the channels by at most 0.12 px and the fringe never showed. The shift is now a fraction of the rim refraction offset, matching `liquid_glass_render.frag` (red at `1 + chromaticAberration * 0.5`, blue at `1 - chromaticAberration * 0.5` of the offset). Indicators keep `chromaticAberration: 0.0` by default, so nothing changes unless you set it in `indicatorSettings`; values around 0.15–0.35 now give a visible iridescent rim on a pressed pill.
+
 # 1.16.1
 
 ## Features

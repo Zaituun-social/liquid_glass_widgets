@@ -239,12 +239,13 @@ void main() {
   // --------------------------------------------------------------------------
   // CHROMATIC ABERRATION
   // --------------------------------------------------------------------------
-  // Separates RGB channels slightly at edges, creating a subtle prism effect.
-  // Red shifts one way, blue shifts the opposite, green stays centered.
-  
-  // TWEAK: (0.12) - subtle chromatic shift for "Apple style" refraction
-  vec2 distort = surfaceNormal * edgeInfluence * uChromaticAberration;
-  vec2 chromaticShift = distort * 0.12; 
+  // Separates RGB channels at edges, creating a subtle prism effect.
+  // Same dispersion model as liquid_glass_render.frag: red is bent by
+  // (1 + CA * 0.5) of the refraction offset, blue by (1 - CA * 0.5), green
+  // stays on the refracted position. The offset is in logical px and already
+  // carries edgeInfluence, so the fringe tracks the lens and fades inward.
+  // Taking it from localRefracted keeps the GLES Y-flip above in effect.
+  vec2 chromaticShift = (localRefracted - posInBg) * (uChromaticAberration * 0.5);
   
   vec3 bg;
   if (uHasBackground > 0.5) {
