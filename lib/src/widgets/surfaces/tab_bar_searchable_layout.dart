@@ -13,6 +13,7 @@ import '../../renderer/glass_backdrop_group.dart';
 import '../../renderer/liquid_glass_renderer.dart';
 import '../../types/glass_interaction_behavior.dart';
 import '../../../types/glass_quality.dart';
+import '../../../constants/glass_motion.dart';
 import '../../../widgets/shared/adaptive_liquid_glass_layer.dart';
 import '../../../widgets/shared/glass_accessibility_scope.dart';
 import '../../../widgets/shared/glass_content_aware_scope.dart';
@@ -76,7 +77,7 @@ class TabBarSearchableLayout extends StatefulWidget {
     this.tabPadding = const EdgeInsets.symmetric(horizontal: 4),
     this.iconLabelSpacing = 4,
     this.enableBlend = true,
-    this.blendAmount = 10,
+    this.blendAmount = GlassMotion.tabBarBlend,
     this.settings,
     this.showIndicator = true,
     this.indicatorColor,
@@ -131,8 +132,7 @@ class TabBarSearchableLayout extends StatefulWidget {
   static const double _kDefaultBorderRadius = 32.0;
 
   /// iOS 26-style spring for the pill morph animations.
-  static const _kSpring =
-      SpringDescription(mass: 1.0, stiffness: 350.0, damping: 30.0);
+  static const _kSpring = GlassMotion.tabBarSpring;
 
   final List<GlassTab> tabs;
   final int selectedIndex;
@@ -1141,8 +1141,8 @@ class _TabBarSearchableLayoutState extends State<TabBarSearchableLayout>
         //     shrinks, maintaining a perfect 6px overlap with the top of the glass.
         child: TweenAnimationBuilder<double>(
           tween: Tween<double>(end: accessoryInline ? 1.0 : 0.0),
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOutCubic,
+          duration: GlassMotion.accessoryDuration,
+          curve: GlassMotion.accessoryCurve,
           builder: (context, accessoryT, _) {
             // Outer container height follows the ACCESSORY state.
             final height =

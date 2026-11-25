@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter/rendering.dart';
 
+import '../../../constants/glass_motion.dart';
 import '../../../src/renderer/liquid_glass_renderer.dart';
 import '../../../src/widgets/surfaces/status_bar_row.dart';
 import '../../../src/widgets/surfaces/vertical_bar_title_row.dart';
@@ -1213,7 +1214,7 @@ class _PinnedSide extends StatelessWidget {
         explicit: DefaultButtonSettings.of(context),
       ),
       quality: GlassThemeHelpers.resolveQuality(context),
-      blendAmount: _budBlend * math.sin(math.pi * positionT),
+      blendAmount: GlassMotion.budBlendAt(positionT),
       platformViewBackdrop: state.flowTo.platformViewBackdrop,
       child: run,
     );
@@ -1225,10 +1226,6 @@ class _PinnedSide extends StatelessWidget {
     );
   }
 }
-
-/// How far apart, in logical pixels, a bud and its partner blend at the height
-/// of their parting.
-const double _budBlend = 20.0;
 
 /// One shell [_PinnedSide] draws: a group on either route or both, and where
 /// each sits counted from the pinned edge.

@@ -483,15 +483,12 @@ class SheetGeometry {
     final minPos = positionForState(minState, screenHeight);
     final maxPos = positionForState(maxState, screenHeight);
 
-    if (rawPosition < minPos) {
-      final overflow = minPos - rawPosition;
-      return minPos - overflow * resistance;
-    }
-    if (rawPosition > maxPos) {
-      final overflow = rawPosition - maxPos;
-      return maxPos + overflow * resistance;
-    }
-    return rawPosition;
+    return GlassMotion.resist(
+      rawPosition,
+      min: minPos,
+      max: maxPos,
+      resistance: resistance,
+    );
   }
 }
 

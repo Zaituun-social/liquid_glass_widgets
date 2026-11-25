@@ -30,6 +30,7 @@ import 'tab_bar_bottom_internal.dart'
         resolveBarLabelColor;
 import '../../../widgets/surfaces/shared/tab_bar_accessory_placement.dart';
 import 'tab_bar_layout_utils.dart';
+import '../../../constants/glass_motion.dart';
 
 /// Internal [StatefulWidget] that owns the bottom-placement rendering engine.
 ///
@@ -53,7 +54,7 @@ class TabBarBottomLayout extends StatefulWidget {
     this.tabPadding = const EdgeInsets.symmetric(horizontal: 4),
     this.iconLabelSpacing = 4,
     this.enableBlend = true,
-    this.blendAmount = 10,
+    this.blendAmount = GlassMotion.tabBarBlend,
     this.settings,
     this.showIndicator = true,
     this.indicatorColor,

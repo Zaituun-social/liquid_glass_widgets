@@ -21,6 +21,7 @@ import '../../types/interaction_notification.dart';
 import '../../src/widgets/overlays/glass_sheet_defaults.dart';
 import '../../src/widgets/surfaces/vertical_bar_title_row.dart';
 import '../../constants/glass_defaults.dart';
+import '../../constants/glass_motion.dart';
 import '../shared/glass_accessibility_scope.dart';
 import '../shared/glass_isolation_scope.dart';
 import '../surfaces/glass_vertical_bar.dart';
@@ -280,9 +281,9 @@ class GlassModalSheet extends StatefulWidget {
     this.halfSettings,
     this.fullSettings,
     this.stretch = 0.5,
-    this.resistance = 0.08,
-    this.snapThreshold = 0.4,
-    this.velocityThreshold = 700.0,
+    this.resistance = GlassMotion.sheetResistance,
+    this.snapThreshold = GlassMotion.sheetSnapThreshold,
+    this.velocityThreshold = GlassMotion.sheetFlickVelocity,
     this.settings,
     this.quality,
     this.platformViewBackdrop = false,
@@ -460,9 +461,9 @@ class GlassModalSheet extends StatefulWidget {
     double? fullBottomBorderRadius,
     double horizontalMargin = 8.0,
     double bottomMargin = 8.0,
-    double resistance = 0.08,
-    double snapThreshold = 0.4,
-    double velocityThreshold = 700.0,
+    double resistance = GlassMotion.sheetResistance,
+    double snapThreshold = GlassMotion.sheetSnapThreshold,
+    double velocityThreshold = GlassMotion.sheetFlickVelocity,
     Color? glowColor,
     double glowRadius = 1.5,
     bool suppressInteractionOnChildren = false,
