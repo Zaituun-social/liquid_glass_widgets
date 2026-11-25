@@ -4,10 +4,13 @@ library;
 // Renderer — explicit public surface only.
 // LiquidGlass is intentionally excluded: use AdaptiveGlass or Glass* widgets
 // instead. LiquidGlass is Impeller-only and silently renders nothing on Skia/web.
-// LiquidStretch/RawLiquidStretch and GlassGlowLayer are internal utilities.
+// RawLiquidStretch and GlassGlowLayer are internal utilities. LiquidStretch is
+// exported for app surfaces that press and drag like the package's own (a
+// bar the finger pulls, a pill it presses), as the tab bar and sheets do.
 export 'src/renderer/liquid_glass_renderer.dart'
     show
         AnchorStretchSettings,
+        LiquidStretch,
         GlassBodyMode,
         GlassLensModel,
         LiquidGlassSettings,
@@ -26,6 +29,7 @@ export 'liquid_glass_setup.dart';
 
 // Constants
 export 'constants/glass_defaults.dart';
+export 'constants/glass_motion.dart';
 export 'constants/glass_shadow.dart';
 
 // Theme
@@ -65,6 +69,8 @@ export 'utils/glass_morph_controller.dart'
         MorphStyle,
         LiquidMorphState,
         MorphPhase;
+export 'utils/liquid_morph_geometry.dart'
+    show LiquidMorphGeometry, LiquidMorphFrame;
 export 'utils/glass_spring.dart';
 export 'utils/glass_performance_monitor.dart'
     show GlassPerformanceMonitor; // PremiumGlassTracker is internal

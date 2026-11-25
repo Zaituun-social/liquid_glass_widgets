@@ -244,7 +244,7 @@ class _GlassModalSheetState extends State<GlassModalSheet>
 
     if (animate) {
       final simulation = SpringSimulation(
-        const SpringDescription(mass: 1.0, stiffness: 220.0, damping: 30.0),
+        GlassMotion.sheetSnapSpring,
         _currentPosition,
         targetPosition,
         velocity / screenHeight,
@@ -765,8 +765,7 @@ class _GlassModalSheetState extends State<GlassModalSheet>
 
       // Calibrate for Apple Maps behavior:
       // Morphing should be almost instant (complete within first 15% of movement)
-      final tMorph = (tProgressRaw / 0.15).clamp(0.0, 1.0);
-      final tProgress = Curves.easeOut.transform(tMorph);
+      final tProgress = GlassMotion.sheetShapeAt(tProgressRaw);
 
       // 1. Resolve Peek-specific geometry
       final peekHMargin =

@@ -1392,24 +1392,6 @@ class _GlassMenuState extends State<GlassMenu> with TickerProviderStateMixin {
     );
 
     final targetHeight = widget.menuHeight ?? menuHeight;
-    // Under morphFromZero the body lerps from a zero-size point at the trigger
-    // center (collapse-to-point) rather than from the trigger's own size; the
-    // false path keeps tw/th so the spawn-blob behavior is byte-identical.
-    final double sizeStartW = widget.morphFromZero ? 0.0 : tw;
-    final double sizeStartH = widget.morphFromZero ? 0.0 : th;
-
-    // During close undershoot (sizeT < 0), squeeze relative to trigger size.
-    // NEVER lerp against the distant targetHeight — for a tall menu (e.g. 340 px),
-    // a negative lerp would subtract 45+ px from a 44 px trigger and collapse
-    // the container to 0 px, causing a visible flash on the close bounce.
-    final currentHeight = state.sizeT < 0.0
-        ? (sizeStartH * (1.0 + state.sizeT * 0.25)).clamp(1.0, double.infinity)
-        : lerpDouble(sizeStartH, targetHeight, state.sizeT)!
-            .clamp(0.0, double.infinity);
-    final currentWidth = state.sizeT < 0.0
-        ? (sizeStartW * (1.0 + state.sizeT * 0.25)).clamp(1.0, double.infinity)
-        : lerpDouble(sizeStartW, widget.menuWidth, state.sizeT)!
-            .clamp(0.0, double.infinity);
 
     final inheritedSettings = InheritedLiquidGlass.of(context);
     final effectiveSettings = widget.settings ??
@@ -1438,63 +1420,28 @@ class _GlassMenuState extends State<GlassMenu> with TickerProviderStateMixin {
         ImageFilter.isShaderFilterSupported &&
         !widget.platformViewBackdrop;
 
-    final maxRadius = math.min(currentWidth, currentHeight) / 2.0;
-    final double radiusT =
-        Curves.easeInExpo.transform(state.sizeT.clamp(0.0, 1.0));
-    final currentRadius = _morphController.isClosing
-        ? (isPremium
-            ? maxRadius
-            : lerpDouble(
-                _triggerBorderRadius ?? (_triggerSize!.shortestSide / 2.0),
-                widget.menuBorderRadius,
-                radiusT,
-              )!)
-        : lerpDouble(maxRadius, widget.menuBorderRadius, radiusT)!;
-
-    final double effectiveDx;
-    final double effectiveDy;
-    if (_morphController.isClosing) {
-      if (isPremium) {
-        // On close (premium): the droplet separates from the open bounds and travels along
-        // the centroid trajectory directly to the trigger center, creating a visible
-        // in-flight gap that allows the SDF metaball bridge to form on approach.
-        effectiveDx = finalDx * state.pathT;
-        effectiveDy = finalDy * state.pathT;
-      } else {
-        // On close (standard/minimal): single-blob geometric collapse directly
-        // into the trigger button bounds with no ghost button underneath.
-        effectiveDx = finalDx * state.sizeT;
-        effectiveDy = finalDy * state.sizeT;
-      }
-    } else {
-      // On open: for large menus, clamp the anchor edge displacement so the menu's
-      // pinned corner never drifts more than 8 px from the trigger button during flight.
-      // Small menus have <= 5 px natural displacement and are completely unaffected.
-      const double maxAnchorDrift = 8.0;
-      final double rawAnchorDriftX = finalDx * (state.pathT - state.sizeT);
-      final double anchorDriftX =
-          rawAnchorDriftX.clamp(-maxAnchorDrift, maxAnchorDrift);
-      effectiveDx = finalDx * state.sizeT + anchorDriftX;
-
-      final double rawAnchorDriftY = finalDy * (state.pathT - state.sizeT);
-      final double anchorDriftY =
-          rawAnchorDriftY.clamp(-maxAnchorDrift, maxAnchorDrift);
-      effectiveDy = finalDy * state.sizeT + anchorDriftY;
-    }
-
-    final blobBLeft = _triggerOverlayPosition.dx +
-        _followOffset.dx +
-        tw / 2.0 +
-        effectiveDx -
-        currentWidth / 2.0 +
-        (_horizontalOffset * clampedValue);
-
-    final blobBTop = _triggerOverlayPosition.dy +
-        _followOffset.dy +
-        th / 2.0 +
-        effectiveDy -
-        currentHeight / 2.0 +
-        (_verticalOffset * clampedValue);
+    // Both blobs' geometry, shared with any widget that morphs this way.
+    final frame = LiquidMorphGeometry.resolve(
+      state: state,
+      from: Rect.fromLTWH(
+        _triggerOverlayPosition.dx + _followOffset.dx,
+        _triggerOverlayPosition.dy + _followOffset.dy,
+        tw,
+        th,
+      ),
+      fromRadius: _triggerBorderRadius ?? (_triggerSize!.shortestSide / 2.0),
+      toSize: Size(widget.menuWidth, targetHeight),
+      toRadius: widget.menuBorderRadius,
+      travel: Offset(finalDx, finalDy),
+      closing: _morphController.isClosing,
+      premium: isPremium,
+      fromZero: widget.morphFromZero,
+    );
+    final currentWidth = frame.body.width;
+    final currentHeight = frame.body.height;
+    final currentRadius = frame.bodyRadius;
+    final blobBLeft = frame.body.left + (_horizontalOffset * clampedValue);
+    final blobBTop = frame.body.top + (_verticalOffset * clampedValue);
 
     // Solid overlay during flight and metaball fusion.
     // Handoff to the real trigger button occurs cleanly when hasHandedOff fires (rawValue <= 0.0).

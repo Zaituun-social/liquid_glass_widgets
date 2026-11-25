@@ -21,6 +21,7 @@ import '../../src/widgets/surfaces/tab_bar_searchable_layout.dart';
 import '../../src/widgets/surfaces/tab_bar_vertical_layout.dart';
 import 'glass_navigation_shell.dart';
 import 'glass_vertical_bar.dart';
+import '../../constants/glass_motion.dart';
 
 export 'shared/glass_bar_minimize_behavior.dart';
 export 'shared/glass_search_bar_config.dart';
@@ -204,7 +205,7 @@ class GlassTabBar extends StatefulWidget with GlassDynamicPreferredSize {
     double iconLabelSpacing = 4,
     bool enableBlend = true,
     bool groupBackdrop = true,
-    double blendAmount = 10,
+    double blendAmount = GlassMotion.tabBarBlend,
     LiquidGlassSettings? settings,
     bool showIndicator = true,
     Color? indicatorColor,
@@ -348,7 +349,7 @@ class GlassTabBar extends StatefulWidget with GlassDynamicPreferredSize {
     double innerBlur = 0.0,
     // Standard shared params
     double spacing = 4,
-    double blendAmount = 10,
+    double blendAmount = GlassMotion.tabBarBlend,
     bool enableBlend = true,
     bool groupBackdrop = true,
     bool showIndicator = true,
@@ -472,7 +473,7 @@ class GlassTabBar extends StatefulWidget with GlassDynamicPreferredSize {
     double iconLabelSpacing = 4,
     bool enableBlend = true,
     bool groupBackdrop = true,
-    double blendAmount = 10,
+    double blendAmount = GlassMotion.tabBarBlend,
     LiquidGlassSettings? settings,
     bool showIndicator = true,
     Color? indicatorColor,
@@ -676,7 +677,7 @@ class GlassTabBar extends StatefulWidget with GlassDynamicPreferredSize {
     double iconLabelSpacing = 4,
     bool enableBlend = true,
     bool groupBackdrop = true,
-    double blendAmount = 10,
+    double blendAmount = GlassMotion.tabBarBlend,
     LiquidGlassSettings? settings,
     bool showIndicator = true,
     Color? indicatorColor,
@@ -830,7 +831,7 @@ class GlassTabBar extends StatefulWidget with GlassDynamicPreferredSize {
       this.iconLabelSpacing = 4,
       this.enableBlend = true,
       this.groupBackdrop = true,
-      this.blendAmount = 10,
+      this.blendAmount = GlassMotion.tabBarBlend,
       this.showIndicator = true,
       this.magnification = 1.15,
       this.innerBlur = 0.0,
